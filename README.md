@@ -10,5 +10,7 @@ This is the log in development process
 * Initialization
 ### V0.0.2
 * Skeleton
+### V0.0.3
+* More functions(radius, satellitelist, etc)
 
 
