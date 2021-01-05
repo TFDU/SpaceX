@@ -2,7 +2,7 @@
 
 
 ## Demo
-![image](https://github.com/TFDU/TwitchPlus/blob/main/demo/TwitchPlus.gif)
+![image]()
 
 ## Developer Log
 This is the log in development process
