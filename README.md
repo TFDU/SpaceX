@@ -12,5 +12,8 @@ This is the log in development process
 * Skeleton
 ### V0.0.3
 * More functions(radius, satellitelist, etc)
+### V0.0.4
+* Update SatelliteList and Main Component
+* WorldMap component
 
 
