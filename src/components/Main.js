@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import SatSetting from './SatSetting';
 import SatelliteList from './SatelliteList';
-import { NEARBY_SATELLITE, STARLINK_CATEGORY, SAT_API_KEY } from '../constants';
+import WorldMap from './WorldMap';
+import { NEARBY_SATELLITE, STARLINK_CATEGORY, SAT_API_KEY } from '../constant';
 import Axios from 'axios';
 
 class Main extends Component {
@@ -9,7 +10,32 @@ class Main extends Component {
       super();
       this.state = {
         loadingSatellites: false,
+        selected: [],
       }
+    }
+
+    trackOnClick = () => {
+      console.log(`tracking ${this.state.selected}`);
+    }
+
+    addOrRemove = (item, status) => {
+      let { selected: list } = this.state;
+      const found = list.some( entry => entry.satid === item.satid);
+
+      if(status && !found){
+          list.push(item)
+      }
+
+      if(!status && found){
+          list = list.filter( entry => {
+              return entry.satid !== item.satid;
+          });
+      }
+      
+      console.log(list);
+      this.setState({
+        selected: list
+      })
     }
 
     showNearbySatellite = (setting) => {
@@ -17,9 +43,9 @@ class Main extends Component {
     }
 
     fetchSatellite = (setting) => {
-      const {observerLat, observerLong, observerAlt, radious} = setting;
-      const url = `${NEARBY_SATELLITE}/${observerLat}/${observerLong}/${observerAlt}/${radious}/${STARLINK_CATEGORY}/&apiKey=${SAT_API_KEY}`;
-
+      const {observerLat, observerLong, observerAlt, radius} = setting;
+      const url = `${NEARBY_SATELLITE}/${observerLat}/${observerLong}/${observerAlt}/${radius}/${STARLINK_CATEGORY}/&apiKey=${SAT_API_KEY}`;
+      
       this.setState({
         loadingSatellites: true,
       })
@@ -28,13 +54,14 @@ class Main extends Component {
               this.setState({
                   satInfo: response.data,
                   loadingSatellites: false,
+                  selected: [],
               })
           })
           .catch(error => {
               console.log('err in fetch satellite -> ', error);
               this.setState({
                 loadingSatellites: false,
-            })
+              })
           })
     }
 
@@ -43,10 +70,16 @@ class Main extends Component {
           <div className='main'>
             <div className="left-side">
               <SatSetting onShow={this.showNearbySatellite} />
-              <SatelliteList satInfo={this.state.satInfo} loading={this.state.loadingSatellites} />
+              <SatelliteList 
+                satInfo={this.state.satInfo} 
+                loading={this.state.loadingSatellites} 
+                onSelectionChange={this.addOrRemove}
+                disableTrack={this.state.selected.length === 0}
+                trackOnclick={this.trackOnClick}
+              />
             </div>
             <div className="right-side">
-              right
+              <WorldMap />
             </div>
           </div>
         );
